@@ -16,6 +16,8 @@
 *.war
 #*.jar
 out/
+.idea/
+target/
 *.nar
 *.ear
 *.zip
