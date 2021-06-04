@@ -26,7 +26,7 @@
     </context-param>
     <context-param>
         <param-name>jdbcPassword</param-name>
-        <param-value>BAG#bag4</param-value>
+        <param-value>Blessing@2019</param-value>
     </context-param>
 <!--        <servlet>-->
 <!--            <servlet-name>Students</servlet-name>-->

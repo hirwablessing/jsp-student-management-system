@@ -1,4 +1,4 @@
-package com.example.demo.DB;
+package com.example.demo.DAO;
 import com.example.demo.models.Student;
 
 import java.sql.*;
@@ -62,7 +62,7 @@ public class StudentDao {
             disconnect();
             return listStudent;
         }
-        public boolean deleteStudent(Student student) throws SQLException {
+        public void deleteStudent(Student student) throws SQLException {
             String sql = "DELETE FROM student where id = ?";
             connect();
             PreparedStatement statement = jdbcConnection.prepareStatement(sql);
@@ -70,7 +70,6 @@ public class StudentDao {
             boolean rowDeleted = statement.executeUpdate() > 0;
             statement.close();
             disconnect();
-            return rowDeleted;
         }
         public boolean updateStudent(Student Student) throws SQLException {
             String sql = "UPDATE student SET firstName = ?, lastName = ?, gender = ?";

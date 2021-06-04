@@ -1,8 +1,8 @@
 package com.example.demo.Controllers;
 
-import com.example.demo.DB.StudentDao;
-import com.example.demo.DB.StudentDaoHbnt;
-import com.example.demo.models.Student;
+import com.example.demo.DAO.StudentDaoHbnt;
+import com.example.demo.models.Bed;
+import com.example.demo.models.enums.BedType;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -12,7 +12,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Servlet implementation class Students
@@ -20,13 +22,13 @@ import java.util.List;
 @WebServlet("/")
 public class Students extends HttpServlet {
     private static final long serialVersionUID = 1L;
-    private StudentDao studentDao;
+//    private StudentDao studentDao;
     private StudentDaoHbnt studentDaoHbnt;
     public void init() {
-        String jdbcURL = getServletContext().getInitParameter("jdbcURL");
-        String jdbcUsername = getServletContext().getInitParameter("jdbcUsername");
-        String jdbcPassword = getServletContext().getInitParameter("jdbcPassword");
-        studentDao = new StudentDao(jdbcURL, jdbcUsername, jdbcPassword);
+//        String jdbcURL = getServletContext().getInitParameter("jdbcURL");
+//        String jdbcUsername = getServletContext().getInitParameter("jdbcUsername");
+//        String jdbcPassword = getServletContext().getInitParameter("jdbcPassword");
+//        studentDao = new StudentDao(jdbcURL, jdbcUsername, jdbcPassword);
         studentDaoHbnt = new StudentDaoHbnt();
     }
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -66,7 +68,7 @@ public class Students extends HttpServlet {
     }
     private void listStudent(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, IOException, ServletException {
-        List<Student> listStudent = studentDao.listAllStudents();
+        List<com.example.demo.models.Student> listStudent = studentDaoHbnt.getAllStudent();
         request.setAttribute("listStudent", listStudent);
         RequestDispatcher dispatcher = request.getRequestDispatcher("students.jsp");
         dispatcher.forward(request, response);
@@ -79,7 +81,7 @@ public class Students extends HttpServlet {
     private void showEditForm(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, ServletException, IOException {
         int id = Integer.parseInt(request.getParameter("id"));
-        Student existingStudent = studentDao.getStudent(id);
+        com.example.demo.models.Student existingStudent = studentDaoHbnt.getStudent((long) id);
         RequestDispatcher dispatcher = request.getRequestDispatcher("add_student.jsp");
         request.setAttribute("student", existingStudent);
         dispatcher.forward(request, response);
@@ -89,9 +91,16 @@ public class Students extends HttpServlet {
         String firstName = request.getParameter("firstName");
         String lastName = request.getParameter("lastName");
         String gender = request.getParameter("gender");
-        Student newStudent = new Student(firstName, lastName, gender);
+        com.example.demo.models.Student newStudent = new com.example.demo.models.Student(firstName, lastName, gender);
         //studentDao.insertStudent(newStudent);
         studentDaoHbnt.saveStudent(newStudent);
+        Bed newBed = new Bed("001", BedType.BUNK);
+        Long bedId = studentDaoHbnt.saveBed(newBed);
+        newBed.setId(bedId);
+
+        Set<Bed> beds = new HashSet<Bed>();
+        beds.add(newBed);
+        newStudent.setBeds(beds);
         response.sendRedirect("list");
     }
     private void updateStudent(HttpServletRequest request, HttpServletResponse response)
@@ -100,20 +109,21 @@ public class Students extends HttpServlet {
         String firstName = request.getParameter("firstName");
         String lastName = request.getParameter("lastName");
         String gender = request.getParameter("gender");
-        Student book = new Student(Long.valueOf(id), firstName, lastName, gender);
-        studentDaoHbnt.updateStudent(book);
+        com.example.demo.models.Student student = new com.example.demo.models.Student(Long.valueOf(id), firstName, lastName, gender);
+        studentDaoHbnt.updateStudent(student);
         response.sendRedirect("list");
     }
     private void deleteStudent(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, IOException {
         int id = Integer.parseInt(request.getParameter("id"));
-        Student book = new Student(Long.valueOf(id));
-        studentDao.deleteStudent(book);
+//        Student student = new Student(Long.valueOf(id));
+//        studentDao.deleteStudent(student);
+        studentDaoHbnt.deleteStudent((long) id);
         response.sendRedirect("list");
     }
     private void getStudent(HttpServletRequest request, HttpServletResponse response) throws SQLException, IOException, ServletException {
         int id = Integer.parseInt(request.getParameter("id"));
-        Student existingStudent = studentDao.getStudent(id);
+        com.example.demo.models.Student existingStudent = studentDaoHbnt.getStudent((long) id);
         request.setAttribute("viewStudent", existingStudent);
         RequestDispatcher dispatcher = request.getRequestDispatcher("viewStudent.jsp");
         dispatcher.forward(request, response);

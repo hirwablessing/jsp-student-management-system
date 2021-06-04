@@ -1,10 +1,41 @@
-package com.example.demo.DB;
+package com.example.demo.DAO;
 import java.util.List;
+
+import com.example.demo.models.Bed;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import com.example.demo.models.Student;
 import com.example.demo.utils.HibernateUtil;
 public class StudentDaoHbnt {
+
+    /**
+     * Save Student
+     *
+     * @param bed
+     */
+    public Long saveBed(Bed bed) {
+        Transaction transaction = null;
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            // start a transaction
+            transaction = session.beginTransaction();
+            Long bedId = (Long) session.save(bed);
+            // save the student object
+//            session.save(bed);
+            // commit transaction
+            transaction.commit();
+            System.out.println(" New bed added using hibernate okay");
+
+            return bedId;
+
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     /**
      * Save Student
      *
@@ -54,7 +85,7 @@ public class StudentDaoHbnt {
      *
      * @param id
      */
-    public void deleteStudent(int id) {
+    public void deleteStudent(Long id) {
         Transaction transaction = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             // start a transaction
@@ -80,7 +111,7 @@ public class StudentDaoHbnt {
      * @param id
      * @return
      */
-    public Student getStudent(int id) {
+    public Student getStudent(Long id) {
         Transaction transaction = null;
         Student student = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
