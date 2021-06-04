@@ -19,6 +19,18 @@ public class Student {
             inverseJoinColumns = {@JoinColumn(name = "bed_id")}
     )
     private Set<Bed> beds = new HashSet<Bed>();
+
+    @OneToMany(mappedBy = "student", fetch = FetchType.LAZY)
+    private Set<CourseAssignment> courses = new HashSet<>();
+
+    public Set<CourseAssignment> getCourses() {
+        return courses;
+    }
+
+    public void setCourses(Set<CourseAssignment> courses) {
+        this.courses = courses;
+    }
+
     public Long getId() {
         return id;
     }

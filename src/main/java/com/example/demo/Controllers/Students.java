@@ -1,8 +1,8 @@
 package com.example.demo.Controllers;
 
 import com.example.demo.DAO.StudentDaoHbnt;
+import com.example.demo.Enum.BedType;
 import com.example.demo.models.Bed;
-import com.example.demo.models.enums.BedType;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
